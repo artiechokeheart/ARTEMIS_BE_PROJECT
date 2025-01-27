@@ -50,3 +50,14 @@ describe("GET /api/topics", () => {
       });
   });
 });
+
+describe("GET /api/articles/article:id", () => {
+  test("200: Responds with an article object", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then((response) => {
+        expect().toEqual();
+      });
+  });
+});

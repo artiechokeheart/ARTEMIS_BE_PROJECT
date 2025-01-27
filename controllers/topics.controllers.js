@@ -1,7 +1,6 @@
 const { selectTopics } = require("../models/topics.models");
 
-const getTopics = async (request, response, next) => {
-  const queries = request.query;
+exports.getTopics = async (request, response, next) => {
   try {
     const result = await selectTopics();
     response.status(200).send(result);
@@ -9,5 +8,3 @@ const getTopics = async (request, response, next) => {
     next(err);
   }
 };
-
-module.exports = { getTopics };
