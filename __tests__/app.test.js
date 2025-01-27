@@ -26,7 +26,7 @@ describe("GET /api", () => {
 });
 
 describe("GET /api/topics", () => {
-  test("should respond with an array of topics", () => {
+  test("200: should respond with an array of topics", () => {
     return request(app)
       .get("/api/topics")
       .expect(200)
@@ -39,7 +39,7 @@ describe("GET /api/topics", () => {
         });
       });
   });
-  test("should respond with a 404 error", () => {
+  test("404: should respond with a 404 error", () => {
     return request(app)
       .get("/api/topic")
       .expect(404)
