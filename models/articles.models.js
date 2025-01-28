@@ -1,10 +1,8 @@
 const db = require("../db/connection");
 
-exports.selectArticles = async () => {
-  console.log("aarticles model");
+exports.selectArticlesById = async (article_id) => {
+  const query = await db.query("SELECT * FROM articles WHERE article_id = $1", [
+    article_id,
+  ]);
+  return query.rows;
 };
-
-// const selectArticleById = async () => {
-//   console.log("in articles model");
-//   return;
-// };

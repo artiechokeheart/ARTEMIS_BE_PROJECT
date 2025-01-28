@@ -45,7 +45,6 @@ describe("GET /api/topics", () => {
       .expect(404)
       .then((response) => {
         const error = response.body;
-        console.log(error);
         expect(error).toEqual({ error: "404 - page not found" });
       });
   });
@@ -54,10 +53,23 @@ describe("GET /api/topics", () => {
 describe("GET /api/articles/article:id", () => {
   test("200: Responds with an article object", () => {
     return request(app)
-      .get("/api/articles")
+      .get("/api/articles/1")
       .expect(200)
       .then((response) => {
-        expect().toEqual();
+        const article = response.body;
+        console.log(article);
+        expect(article.article_id).toBe(1);
+        expect(article).toEqual({
+          article_id: 1,
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: "2020-07-09T20:11:00.000Z",
+          votes: 100,
+          article_img_url:
+            "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        });
       });
   });
 });

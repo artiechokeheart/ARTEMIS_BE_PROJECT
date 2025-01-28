@@ -1,22 +1,11 @@
-const { selectArticles } = require("../models/articles.models");
+const { selectArticlesById } = require("../models/articles.models");
 
-exports.getArticles = async (request, response, next) => {
-  const query = request;
+exports.getArticlesById = async (request, response, next) => {
+  const { article_id } = request.params;
   try {
-    console.log("article controller");
-    const result = await selectArticles();
-    response.status(200).send({ message: result });
+    const result = await selectArticlesById(article_id);
+    response.status(200).send(result[0]);
   } catch (err) {
     next(err);
   }
 };
-
-// const getArticlesById = async (request, response, next) => {
-//   try {
-//     console.log("article controller");
-//     const result = await selectArticleById();
-//     response.status(200).send(result);
-//   } catch (err) {
-//     next(err);
-//   }
-// };
