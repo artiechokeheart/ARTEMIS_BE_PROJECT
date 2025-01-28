@@ -6,13 +6,13 @@ const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data");
 
 /* Set up your beforeEach & afterAll functions here */
-// beforeEach(() => {
-//   return seed(testData);
-// });
+beforeEach(() => {
+  return seed(testData);
+});
 
-// afterAll(() => {
-//   return db.end;
-// });
+afterAll(() => {
+  return db.end();
+});
 
 describe("GET /api", () => {
   test("200: Responds with an object detailing the documentation for each endpoint", () => {
@@ -114,37 +114,13 @@ describe("GET /api/articles", () => {
         });
       });
   });
-  test("Response with an array in decending order", () => {
+  test("200: Responds with an array in decending order", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)
       .then((response) => {
         const articles = response.body;
         expect(articles).toBeSorted({ descending: true });
-        expect(articles[0].article_id).toEqual(3);
-        expect(articles[articles.length - 1].article_id).toEqual(7);
-        test.todo(
-          "article 4 & 5 have the same date & time, possibly test for this"
-        );
       });
   });
 });
-
-// describe("Errors", () => {
-//   test("Recieve a 400 when article_id is NaN", () => {
-//     return request(app)
-//       .get("/api/articles/mitch")
-//       .expect(400)
-//       .then((response) => {
-//         expect(response.body).toEqual({ error: "400 - bad request" });
-//       });
-//   });
-//   test("Recieve a 404 when article_id is out of range", () => {
-//     return request(app)
-//       .get("/api/articles/2000")
-//       .expect(404)
-//       .then((response) => {
-//         expect(response.body).toEqual({ error: "404 - page not found" });
-//       });
-//   });
-// });

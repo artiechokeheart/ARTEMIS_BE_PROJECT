@@ -15,8 +15,9 @@ exports.getArticlesById = async (request, response, next) => {
 };
 
 exports.getArticles = async (request, response, next) => {
+  const queries = request.query;
   try {
-    const result = await selectArticles();
+    const result = await selectArticles(queries);
     response.status(200).send(result);
   } catch (err) {
     next(err);
