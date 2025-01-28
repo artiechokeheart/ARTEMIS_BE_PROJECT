@@ -26,8 +26,14 @@ app.all("*", (req, res) => {
 });
 
 app.use((err, request, response, next) => {
+  if (err.code === "22P02") {
+    response.status(400).send({ error: "400 - bad request" });
+  }
+});
+
+app.use((err, request, response, next) => {
   console.log(err, "<-- Unhandled Error");
-  res.status(500).send({ error: "Server error" });
+  ressponse.status(500).send({ error: "Server error" });
 });
 
 module.exports = app;

@@ -57,7 +57,6 @@ describe("GET /api/articles/article:id", () => {
       .expect(200)
       .then((response) => {
         const article = response.body;
-        console.log(article);
         expect(article.article_id).toBe(1);
         expect(article).toEqual({
           article_id: 1,
@@ -71,5 +70,24 @@ describe("GET /api/articles/article:id", () => {
             "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
         });
       });
+  });
+
+  describe("Errors", () => {
+    test("Recieve a 400 when article_id is NaN", () => {
+      return request(app)
+        .get("/api/articles/mitch")
+        .expect(400)
+        .then((response) => {
+          expect(response.body).toEqual({ error: "400 - bad request" });
+        });
+    });
+    test("Recieve a 404 when article_id is out of range", () => {
+      return request(app)
+        .get("/api/articles/2000")
+        .expect(404)
+        .then((response) => {
+          expect(response.body).toEqual({ error: "404 - page not found" });
+        });
+    });
   });
 });
