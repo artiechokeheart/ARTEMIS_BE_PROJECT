@@ -6,6 +6,7 @@ const { getTopics } = require("./controllers/topics.controllers");
 const {
   getArticlesById,
   getArticles,
+  getArticleComments,
 } = require("./controllers/articles.controllers");
 
 app.use(express.json());
@@ -23,6 +24,8 @@ app.get("/api/topics", getTopics);
 app.get("/api/articles", getArticles);
 
 app.get("/api/articles/:article_id", getArticlesById);
+
+app.get("/api/articles/:article_id/comments", getArticleComments);
 
 //error handlers
 

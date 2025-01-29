@@ -124,3 +124,58 @@ describe("GET /api/articles", () => {
       });
   });
 });
+
+describe("GET /api/articles/:article_id/comments", () => {
+  test("200: Responds with an array of comments for the given article_id", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then((response) => {
+        const comments = response.body;
+        expect(comments.length).toEqual(11);
+        comments.forEach((comment) => {
+          expect(typeof comment.comment_id).toBe("number");
+          expect(typeof comment.article_id).toBe("number");
+          expect(typeof comment.created_at).toBe("string");
+          expect(typeof comment.votes).toBe("number");
+          expect(typeof comment.body).toBe("string");
+          expect(typeof comment.author).toBe("string");
+        });
+      });
+  });
+  test("200: Responds with an array in decending order", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then((response) => {
+        const comments = response.body;
+        expect(comments).toBeSorted({ descending: true });
+      });
+  });
+  describe.only("Errors", () => {
+    test.skip("Recieve a 400 when article_id is NaN", () => {
+      return request(app)
+        .get("/api/articles/mitch/comments")
+        .expect(400)
+        .then((response) => {
+          expect(response.body).toEqual({ error: "400 - bad request" });
+        });
+    });
+    test("Recieve a 404 when article_id does not exist", () => {
+      return request(app)
+        .get("/api/articles/2000/comments")
+        .expect(404)
+        .then((response) => {
+          expect(response.body).toEqual({ error: "404 - page not found" });
+        });
+    });
+    // test("Recieve a 200 when the article_id exists but has not comments", () => {
+    //   return request(app)
+    //     .get("/api/articles/2/comments")
+    //     .expect(200)
+    //     .then((response) => {
+    //       expect(response.body).toEqual();
+    //     });
+    // });
+  });
+});
