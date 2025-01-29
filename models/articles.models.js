@@ -1,6 +1,6 @@
-const { promises } = require("supertest/lib/test");
 const db = require("../db/connection");
 const { checkArticleExists } = require("../utils/checkCategoryExists");
+const format = require("pg-format");
 
 exports.selectArticlesById = async (article_id) => {
   try {
@@ -44,6 +44,22 @@ exports.selectComments = async (article_id) => {
     return query.rows;
   } catch ({ status, error }) {
     error.status = status;
+    return Promise.reject(error);
+  }
+};
+
+exports.addComment = async (body, username, article_id, votes = 0) => {
+  const sqlString = format(
+    "INSERT INTO comments (body, author, article_id, votes) VALUES %L RETURNING *;",
+    [[body, username, article_id, votes]]
+  );
+  try {
+    const query = await db.query(sqlString);
+    const comment = query.rows[0];
+    return comment;
+  } catch (error) {
+    console.log("error here -", error);
+    //error.status = status;
     return Promise.reject(error);
   }
 };

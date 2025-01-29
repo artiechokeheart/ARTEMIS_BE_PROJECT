@@ -7,6 +7,7 @@ const {
   getArticlesById,
   getArticles,
   getArticleComments,
+  postComment,
 } = require("./controllers/articles.controllers");
 
 app.use(express.json());
@@ -26,6 +27,8 @@ app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id", getArticlesById);
 
 app.get("/api/articles/:article_id/comments", getArticleComments);
+
+app.post("/api/articles/:article_id/comments", postComment);
 
 //error handlers
 

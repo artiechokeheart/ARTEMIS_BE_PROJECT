@@ -183,3 +183,41 @@ describe("GET /api/articles/:article_id/comments", () => {
     });
   });
 });
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test.only("200: Responds with the posted comment", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({
+        username: "icellusedkars",
+        body: "That's, like, the whole point....",
+      })
+      .expect(201)
+      .then((response) => {
+        const comment = response.body;
+        expect(typeof comment).toBe("object");
+        expect(comment.article_id).toEqual(1);
+        expect(comment.author).toEqual("icellusedkars");
+        expect(typeof comment.body).toEqual("string");
+        expect(typeof comment.comment_id).toEqual("number");
+        expect(comment.votes).toEqual(0);
+        expect(typeof comment.created_at).toEqual("string");
+      });
+  });
+  // });
+  // test.only("404:user doesn't exist", () => {
+  //   return request(app)
+  //     .post("/api/articles/9/comments")
+  //     .send({
+  //       username: "xXx_girlypop_xXx",
+  //       body: "That's, like, the whole point....",
+  //     })
+  //     .expect(201)
+  //     .then((response) => {
+  //       console.log(response.body);
+  //       expect(response.body).toEqual({
+  //         comment: "That's, like, the whole point....",
+  //       });
+  //     });
+  // });
+});
