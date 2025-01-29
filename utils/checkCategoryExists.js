@@ -8,7 +8,6 @@ exports.checkArticleExists = async (article_id) => {
       [article_id]
     );
     if (resolved.rows.length === 0) {
-      console.log("in the if of check articles exists");
       return Promise.reject({ status: 404, error: {} });
     }
     return "check complete - category exists";
@@ -16,6 +15,3 @@ exports.checkArticleExists = async (article_id) => {
     return Promise.reject({ status: 500, error });
   }
 };
-//how do implement a custom error handler with async await????
-
-//{ status: 404, msg: "404 - page not  found" }

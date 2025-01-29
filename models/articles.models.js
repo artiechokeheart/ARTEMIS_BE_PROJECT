@@ -4,9 +4,7 @@ const format = require("pg-format");
 
 exports.selectArticlesById = async (article_id) => {
   try {
-    if (isNaN(article_id)) {
-      return Promise.reject({ status: 400, error: {} });
-    }
+    await checkArticleExists(article_id);
     const query = await db.query(
       "SELECT * FROM articles WHERE article_id = $1",
       [article_id]
@@ -49,17 +47,17 @@ exports.selectComments = async (article_id) => {
 };
 
 exports.addComment = async (body, username, article_id, votes = 0) => {
-  const sqlString = format(
-    "INSERT INTO comments (body, author, article_id, votes) VALUES %L RETURNING *;",
-    [[body, username, article_id, votes]]
-  );
   try {
+    await checkArticleExists(article_id);
+    const sqlString = format(
+      "INSERT INTO comments (body, author, article_id, votes) VALUES %L RETURNING *;",
+      [[body, username, article_id, votes]]
+    );
     const query = await db.query(sqlString);
     const comment = query.rows[0];
     return comment;
-  } catch (error) {
-    console.log("error here -", error);
-    //error.status = status;
+  } catch ({ status, error }) {
+    error.status = status;
     return Promise.reject(error);
   }
 };
