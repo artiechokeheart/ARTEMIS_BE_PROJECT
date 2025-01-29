@@ -11,12 +11,12 @@ const {
 
 app.use(express.json());
 
-app.get("/", (req, res) => {
-  res.send("hello world!");
+app.get("/", (request, response) => {
+  response.send("hello world!");
 });
 
-app.get("/api", (req, res, next) => {
-  res.send({ endpoints: endpoints });
+app.get("/api", (request, response, next) => {
+  response.send({ endpoints: endpoints });
 });
 
 app.get("/api/topics", getTopics);
@@ -29,18 +29,28 @@ app.get("/api/articles/:article_id/comments", getArticleComments);
 
 //error handlers
 
-app.all("*", (req, res) => {
-  res.status(404).send({ error: "404 - page not found" });
+app.all("*", (request, response) => {
+  response.status(404).send({ error: "404 - page not found" });
 });
 
-app.use((err, request, response, next) => {
-  if (err.code === "22P02") {
+app.use((error, request, response, next) => {
+  if (error.status === 400 || error.code === "22P02") {
     response.status(400).send({ error: "400 - bad request" });
+  } else {
+    next(error);
   }
 });
 
-app.use((err, request, response, next) => {
-  console.log(err, "<-- Unhandled Error");
+app.use((error, request, response, next) => {
+  if (error.status === 404) {
+    response.status(404).send({ error: "404 - page not found" });
+  } else {
+    next(error);
+  }
+});
+
+app.use((error, request, response, next) => {
+  console.log("This is an unhandled error! ->", error, "<- Error");
   ressponse.status(500).send({ error: "Server error" });
 });
 
