@@ -173,7 +173,7 @@ describe("GET /api/articles/:article_id/comments", () => {
           expect(error).toEqual({ error: "404 - page not found" });
         });
     });
-    test("Recieve a 200 when the article_id exists but has not comments", () => {
+    test("Recieve a 200, not an error, when the article_id exists but has not comments", () => {
       return request(app)
         .get("/api/articles/2/comments")
         .expect(200)
