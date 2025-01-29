@@ -183,3 +183,54 @@ describe("GET /api/articles/:article_id/comments", () => {
     });
   });
 });
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test("200: Responds with the posted comment", () => {
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send({
+        username: "icellusedkars",
+        body: "That's, like, the whole point....",
+      })
+      .expect(201)
+      .then((response) => {
+        const comment = response.body;
+        expect(typeof comment).toBe("object");
+        expect(comment.article_id).toEqual(1);
+        expect(comment.author).toEqual("icellusedkars");
+        expect(typeof comment.body).toEqual("string");
+        expect(typeof comment.comment_id).toEqual("number");
+        expect(comment.votes).toEqual(0);
+        expect(typeof comment.created_at).toEqual("string");
+      });
+  });
+  test.todo(
+    "Double check if test is needed to check the time posted as a date (date.now/date.parse etc)"
+  );
+  describe("Errors", () => {
+    test("404: Recieve a 404 when article_id does not exist but is a valid data type", () => {
+      return request(app)
+        .post("/api/articles/20/comments")
+        .send({
+          username: "xXx_girlypop_xXx",
+          body: ".",
+        })
+        .expect(404)
+        .then((response) => {
+          expect(response.body).toEqual({ error: "404 - page not found" });
+        });
+    });
+    test("400: Recieve a 400 error when the article does not exist", () => {
+      return request(app)
+        .post("/api/articles/mitch/comments")
+        .send({
+          username: "xXx_girlypop_xXx",
+          body: "Wow.",
+        })
+        .expect(400)
+        .then((response) => {
+          expect(response.body).toEqual({ error: "400 - bad request" });
+        });
+    });
+  });
+});
