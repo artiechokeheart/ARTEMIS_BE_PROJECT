@@ -10,8 +10,8 @@ exports.getArticlesById = async (request, response, next) => {
   try {
     const result = await selectArticlesById(article_id);
     response.status(200).send(result[0]);
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    next(error);
   }
 };
 
@@ -20,8 +20,8 @@ exports.getArticles = async (request, response, next) => {
   try {
     const result = await selectArticles(queries);
     response.status(200).send(result);
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    next(error);
   }
 };
 
@@ -30,7 +30,7 @@ exports.getArticleComments = async (request, response, next) => {
   try {
     const comments = await selectComments(article_id);
     response.status(200).send(comments);
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    next(error);
   }
 };

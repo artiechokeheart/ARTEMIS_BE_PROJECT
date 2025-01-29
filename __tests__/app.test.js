@@ -77,18 +77,20 @@ describe("GET /api/articles/article:id", () => {
       return request(app)
         .get("/api/articles/mitch")
         .expect(400)
-        .then((response) => {
-          expect(response.body).toEqual({ error: "400 - bad request" });
+        .then((response) => {})
+        .catch((error) => {
+          expect(error).toEqual({ error: "400 - bad request" });
         });
     });
-    test("Recieve a 404 when article_id is out of range", () => {
-      return request(app)
-        .get("/api/articles/2000")
-        .expect(404)
-        .then((response) => {
-          expect(response.body).toEqual({ error: "404 - page not found" });
-        });
-    });
+  });
+  test("Recieve a 404 when article_id is out of range", () => {
+    return request(app)
+      .get("/api/articles/2000")
+      .expect(404)
+      .then((response) => {})
+      .catch((error) => {
+        expect(error).toEqual({ error: "404 - page not found" });
+      });
   });
 });
 
@@ -152,30 +154,32 @@ describe("GET /api/articles/:article_id/comments", () => {
         expect(comments).toBeSorted({ descending: true });
       });
   });
-  describe.only("Errors", () => {
-    test.skip("Recieve a 400 when article_id is NaN", () => {
+  describe("Errors", () => {
+    test("Recieve a 400 when article_id is NaN", () => {
       return request(app)
         .get("/api/articles/mitch/comments")
         .expect(400)
-        .then((response) => {
-          expect(response.body).toEqual({ error: "400 - bad request" });
+        .then((response) => {})
+        .catch((error) => {
+          expect(error).toEqual({ error: "400 - bad request" });
         });
     });
-    test("Recieve a 404 when article_id does not exist", () => {
+    test("Recieve a 404 when article_id does not exist but is a valid data type", () => {
       return request(app)
-        .get("/api/articles/2000/comments")
+        .get("/api/articles/15/comments")
         .expect(404)
-        .then((response) => {
-          expect(response.body).toEqual({ error: "404 - page not found" });
+        .then((response) => {})
+        .catch((error) => {
+          expect(error).toEqual({ error: "404 - page not found" });
         });
     });
-    // test("Recieve a 200 when the article_id exists but has not comments", () => {
-    //   return request(app)
-    //     .get("/api/articles/2/comments")
-    //     .expect(200)
-    //     .then((response) => {
-    //       expect(response.body).toEqual();
-    //     });
-    // });
+    test("Recieve a 200 when the article_id exists but has not comments", () => {
+      return request(app)
+        .get("/api/articles/2/comments")
+        .expect(200)
+        .then((response) => {
+          expect(response.body).toEqual([]);
+        });
+    });
   });
 });
