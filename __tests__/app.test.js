@@ -344,3 +344,20 @@ describe("DELETE /api/comments/:comment_id", () => {
     });
   });
 });
+
+describe("GET /api/users", () => {
+  test("200: should respond with an array of users", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then((response) => {
+        const users = response.body;
+        expect(users.length).toBe(4);
+        users.forEach((user) => {
+          expect(typeof user.username).toBe("string");
+          expect(typeof user.name).toBe("string");
+          expect(typeof user.avatar_url).toBe("string");
+        });
+      });
+  });
+});
