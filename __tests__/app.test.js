@@ -184,7 +184,7 @@ describe("GET /api/articles/:article_id/comments", () => {
   });
 });
 
-describe("POST /api/articles/:article_id/comments", () => {
+describe.only("POST /api/articles/:article_id/comments", () => {
   test("200: Responds with the posted comment", () => {
     return request(app)
       .post("/api/articles/1/comments")
@@ -220,24 +220,36 @@ describe("POST /api/articles/:article_id/comments", () => {
           expect(response.body).toEqual({ error: "404 - page not found" });
         });
     });
-    // test.only("404: Recieve a 404 error when the user does not exist", () => {
-    //   return request(app)
-    //     .post("/api/articles/2/comments")
-    //     .send({
-    //       username: "xXx_girlypop_xXx",
-    //       body: "xoxox",
-    //     })
-    //     .expect(404)
-    //     .then((response) => {
-    //       expect(response.body).toEqual({ error: "404 - page not found" });
-    //     });
-    // });
+    test("404: Recieve a 404 error when the user does not exist", () => {
+      return request(app)
+        .post("/api/articles/2/comments")
+        .send({
+          username: "xXx_girlypop_xXx",
+          body: "xoxox",
+        })
+        .expect(404)
+        .then((response) => {
+          expect(response.body).toEqual({ error: "404 - page not found" });
+        });
+    });
     test("400: Recieve a 400 error when the article does not exist", () => {
       return request(app)
         .post("/api/articles/mitch/comments")
         .send({
           username: "icellusedkars",
           body: "Wow.",
+        })
+        .expect(400)
+        .then((response) => {
+          expect(response.body).toEqual({ error: "400 - bad request" });
+        });
+    });
+    test("400: Recieve a 400 for an incomplete post body", () => {
+      return request(app)
+        .post("/api/articles/9/comments")
+        .send({
+          username: "icellusedkars",
+          body: "",
         })
         .expect(400)
         .then((response) => {
