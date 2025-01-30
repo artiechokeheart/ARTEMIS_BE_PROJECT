@@ -36,24 +36,6 @@ exports.selectArticlesById = async (article_id) => {
   }
 };
 
-exports.updateArticlesById = async (article_id) => {
-  try {
-    await checkArticleExists(article_id);
-    const query = await db.query(
-      "SELECT * FROM articles WHERE article_id = $1",
-      [article_id]
-    );
-    if (query.rows.length === 0) {
-      return Promise.reject({ status: 404, error: {} });
-    } else {
-      return query.rows;
-    }
-  } catch ({ status, error }) {
-    error.status = status;
-    return Promise.reject(error);
-  }
-};
-
 exports.selectComments = async (article_id) => {
   try {
     await checkArticleExists(article_id);
@@ -80,6 +62,26 @@ exports.addComment = async (body, username, article_id, votes = 0) => {
     const query = await db.query(sqlString);
     const comment = query.rows[0];
     return comment;
+  } catch ({ status, error }) {
+    error.status = status;
+    return Promise.reject(error);
+  }
+};
+
+exports.updateArticlesById = async (article_id, inc_votes) => {
+  try {
+    const selectArticle = await exports.selectArticlesById(article_id);
+
+    const currentVotes = selectArticle[0].votes;
+    const newVoteTotal = currentVotes + inc_votes;
+
+    const sqlString = format(
+      "UPDATE articles SET votes = %s WHERE articles.article_id = %s RETURNING *",
+      [newVoteTotal],
+      [article_id]
+    );
+    const query = await db.query(sqlString);
+    return query.rows;
   } catch ({ status, error }) {
     error.status = status;
     return Promise.reject(error);

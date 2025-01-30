@@ -48,3 +48,14 @@ exports.postComment = async (request, response, next) => {
     next(error);
   }
 };
+
+exports.patchArticlesById = async (request, response, next) => {
+  const { article_id } = request.params;
+  const { inc_votes } = request.body;
+  try {
+    const result = await updateArticlesById(article_id, inc_votes);
+    response.status(202).send(result[0]);
+  } catch (error) {
+    next(error);
+  }
+};
