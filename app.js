@@ -30,6 +30,7 @@ app.get("/api/articles/:article_id/comments", getArticleComments);
 
 app.post("/api/articles/:article_id/comments", postComment);
 
+// app.patch("/api/articles/:article_id", patchArticlesById);
 //error handlers
 
 app.all("*", (request, response) => {

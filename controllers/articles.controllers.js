@@ -4,6 +4,7 @@ const {
   selectArticles,
   selectComments,
   addComment,
+  updateArticlesById,
 } = require("../models/articles.models");
 
 exports.getArticlesById = async (request, response, next) => {
