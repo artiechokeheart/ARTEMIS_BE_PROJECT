@@ -5,7 +5,6 @@ const format = require("pg-format");
 exports.selectUsers = async () => {
   try {
     const query = await db.query(`SELECT * FROM users`);
-    console.log(query.rows);
     return query.rows;
   } catch ({ status, error }) {
     error.status = status;
