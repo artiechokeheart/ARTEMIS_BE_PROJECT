@@ -5,6 +5,7 @@ const {
   selectComments,
   addComment,
   updateArticlesById,
+  deleteComment,
 } = require("../models/articles.models");
 
 exports.getArticlesById = async (request, response, next) => {
@@ -55,6 +56,17 @@ exports.patchArticlesById = async (request, response, next) => {
   try {
     const result = await updateArticlesById(article_id, inc_votes);
     response.status(202).send(result[0]);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.deleteArticleComments = async (request, response, next) => {
+  const { comment_id } = request.params;
+
+  try {
+    await deleteComment(comment_id);
+    response.status(204).send();
   } catch (error) {
     next(error);
   }

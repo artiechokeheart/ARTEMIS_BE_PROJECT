@@ -315,10 +315,32 @@ describe("PATCH /api/articles/article:id", () => {
   });
 });
 
-//   test("Recieve a 404 when article_id is out of range", () => {
-//     return request(app)
-//       .get("/api/articles/2000")
-//       .expect(404)
-//       .then((response) => {//         expect(error).toEqual({ error: "404 - page not found" });
-//       });
-//   });
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204: Recieve only a status 204 and no content", () => {
+    return request(app)
+      .delete("/api/comments/10")
+      .expect(204)
+      .then((response) => {
+        expect(response.body).toEqual({});
+      });
+  });
+
+  describe("Errors", () => {
+    test("404: Reieve a 404 error when the comment doesn't exist", () => {
+      return request(app)
+        .delete("/api/comments/300")
+        .expect(404)
+        .then((response) => {
+          expect(response.body).toEqual({ error: "404 - page not found" });
+        });
+    });
+    test("400: Reieve a 400 error when the comment doesn't exist", () => {
+      return request(app)
+        .delete("/api/comments/threehundred")
+        .expect(400)
+        .then((response) => {
+          expect(response.body).toEqual({ error: "400 - bad request" });
+        });
+    });
+  });
+});
