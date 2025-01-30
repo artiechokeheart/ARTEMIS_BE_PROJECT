@@ -16,17 +16,31 @@ exports.checkArticleExists = async (article_id) => {
   }
 };
 
-exports.checkUserExists = async (article_id) => {
+exports.checkUserExists = async (username) => {
   try {
-    const resolved = await db.query(
-      "SELECT * FROM articles WHERE article_id = $1",
-      [article_id]
-    );
+    const resolved = await db.query("SELECT * FROM users WHERE username = $1", [
+      username,
+    ]);
     if (resolved.rows.length === 0) {
       return Promise.reject({ status: 404, error: {} });
     }
-    return "check complete - category exists";
+    return "check complete - user exists";
   } catch (error) {
+    return Promise.reject({ status: 500, error });
+  }
+};
+
+exports.checkCommentBody = async (body) => {
+  try {
+    if (typeof body != "string" || body.length === 0) {
+      return Promise.reject({
+        status: 400,
+        error: {},
+      });
+    } else {
+      return "check complete - body OK";
+    }
+  } catch ({ status, error }) {
     return Promise.reject({ status: 500, error });
   }
 };

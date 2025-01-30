@@ -1,5 +1,9 @@
 const db = require("../db/connection");
-const { checkArticleExists } = require("../utils/checkCategoryExists");
+const {
+  checkArticleExists,
+  checkUserExists,
+  checkCommentBody,
+} = require("../utils/checkCategoryExists");
 const format = require("pg-format");
 
 exports.selectArticles = async () => {
@@ -66,8 +70,9 @@ exports.selectComments = async (article_id) => {
 
 exports.addComment = async (body, username, article_id, votes = 0) => {
   try {
+    await checkCommentBody(body);
+    await checkUserExists(username);
     await checkArticleExists(article_id);
-    // await checkUserExists(username)
     const sqlString = format(
       "INSERT INTO comments (body, author, article_id, votes) VALUES %L RETURNING *;",
       [[body, username, article_id, votes]]
