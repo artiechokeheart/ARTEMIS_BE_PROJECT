@@ -1,6 +1,6 @@
 const { checkArticleExists } = require("../utils/checkCategoryExists");
 
-describe("Function doesCategoryExist", () => {
+describe("Function checkArticleExists", () => {
   test("Returns a promise if the category exists", () => {
     const input = 1;
     return checkArticleExists(input).then((data) =>

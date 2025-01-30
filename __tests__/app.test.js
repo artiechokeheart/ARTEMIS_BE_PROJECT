@@ -212,7 +212,7 @@ describe("POST /api/articles/:article_id/comments", () => {
       return request(app)
         .post("/api/articles/20/comments")
         .send({
-          username: "xXx_girlypop_xXx",
+          username: "icellusedkars",
           body: ".",
         })
         .expect(404)
@@ -220,11 +220,23 @@ describe("POST /api/articles/:article_id/comments", () => {
           expect(response.body).toEqual({ error: "404 - page not found" });
         });
     });
+    // test.only("404: Recieve a 404 error when the user does not exist", () => {
+    //   return request(app)
+    //     .post("/api/articles/2/comments")
+    //     .send({
+    //       username: "xXx_girlypop_xXx",
+    //       body: "xoxox",
+    //     })
+    //     .expect(404)
+    //     .then((response) => {
+    //       expect(response.body).toEqual({ error: "404 - page not found" });
+    //     });
+    // });
     test("400: Recieve a 400 error when the article does not exist", () => {
       return request(app)
         .post("/api/articles/mitch/comments")
         .send({
-          username: "xXx_girlypop_xXx",
+          username: "icellusedkars",
           body: "Wow.",
         })
         .expect(400)
@@ -234,3 +246,37 @@ describe("POST /api/articles/:article_id/comments", () => {
     });
   });
 });
+
+// describe("PATCH /api/articles/article:id", () => {
+//   test("200: Responds with an updated article object", () => {
+//     return request(app)
+//       .get("/api/articles/1")
+//       .expect(202)
+//       .then((response) => {
+//         const article = response.body;
+//         expect(article.article_id).toBe(1);
+//         expect(article.votes).toBe(101);
+//       });
+//   });
+
+//   describe("Errors", () => {
+//     test("Recieve a 400 when article_id is NaN", () => {
+//       return request(app)
+//         .get("/api/articles/mitch")
+//         .expect(400)
+//         .then((response) => {})
+//         .catch((error) => {
+//           expect(error).toEqual({ error: "400 - bad request" });
+//         });
+//     });
+//   });
+//   test("Recieve a 404 when article_id is out of range", () => {
+//     return request(app)
+//       .get("/api/articles/2000")
+//       .expect(404)
+//       .then((response) => {})
+//       .catch((error) => {
+//         expect(error).toEqual({ error: "404 - page not found" });
+//       });
+//   });
+// });
