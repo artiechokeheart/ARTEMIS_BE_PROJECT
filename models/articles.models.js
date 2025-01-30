@@ -3,6 +3,7 @@ const {
   checkArticleExists,
   checkUserExists,
   checkCommentBody,
+  checkCommentExists,
 } = require("../utils/checkCategoryExists");
 const format = require("pg-format");
 
@@ -82,6 +83,21 @@ exports.updateArticlesById = async (article_id, inc_votes) => {
     );
     const query = await db.query(sqlString);
     return query.rows;
+  } catch ({ status, error }) {
+    error.status = status;
+    return Promise.reject(error);
+  }
+};
+
+exports.deleteComment = async (comment_id) => {
+  try {
+    const check = await checkCommentExists(comment_id);
+    const sqlString = format(
+      "DELETE FROM comments WHERE comments.comment_id = %s RETURNING *",
+      [comment_id]
+    );
+    await db.query(sqlString);
+    return;
   } catch ({ status, error }) {
     error.status = status;
     return Promise.reject(error);

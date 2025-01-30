@@ -9,6 +9,7 @@ const {
   getArticleComments,
   postComment,
   patchArticlesById,
+  deleteArticleComments,
 } = require("./controllers/articles.controllers");
 
 app.use(express.json());
@@ -32,6 +33,8 @@ app.get("/api/articles/:article_id/comments", getArticleComments);
 app.post("/api/articles/:article_id/comments", postComment);
 
 app.patch("/api/articles/:article_id", patchArticlesById);
+
+app.delete("/api/comments/:comment_id", deleteArticleComments);
 
 //error handlers
 

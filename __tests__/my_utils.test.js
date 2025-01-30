@@ -2,8 +2,13 @@ const {
   checkArticleExists,
   checkUserExists,
   checkCommentBody,
+  checkCommentExists,
 } = require("../utils/checkCategoryExists");
+const db = require("../db/connection");
 
+afterAll(() => {
+  return db.end();
+});
 describe("Function checkArticleExists", () => {
   test("Returns a promise if the category exists", () => {
     const input = 1;
@@ -69,6 +74,23 @@ describe("Function checkCommentBody", () => {
       .catch(({ status, error }) => {
         expect(status).toBe(400);
         expect(error).toEqual({});
+      });
+  });
+});
+
+describe("Function checkCommentExists", () => {
+  test("Returns a promise if the comment exists", () => {
+    const input = 1;
+    return checkCommentExists(input).then((data) =>
+      expect(data).toBe("check complete - category exists")
+    );
+  });
+  test("Rejects the promise if the comment doesn't exists", () => {
+    const input = "300";
+    return checkCommentExists(input)
+      .then((data) => {})
+      .catch((error) => {
+        expect(error.status).toBe(404);
       });
   });
 });
