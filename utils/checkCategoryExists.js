@@ -32,19 +32,14 @@ exports.checkUserExists = async (username) => {
 
 exports.checkCommentBody = async (body) => {
   try {
-    if (!body === "string") {
+    if (typeof body != "string" || body.length === 0) {
       return Promise.reject({
         status: 400,
         error: {},
       });
+    } else {
+      return "check complete - body OK";
     }
-    if (!body) {
-      return Promise.reject({
-        status: 400,
-        error: "400 - comment is missing content",
-      });
-    }
-    return "check complete - body OK";
   } catch ({ status, error }) {
     return Promise.reject({ status: 500, error });
   }

@@ -51,12 +51,20 @@ describe("Function checkCommentBody", () => {
       .then((data) => {})
       .catch(({ status, error }) => {
         expect(status).toBe(400);
-        expect(error).toEqual("400 - comment is missing content");
+        expect(error).toEqual({});
       });
   });
   test("Rejects the promise when the comment body is not a string", () => {
     const input = 88878;
     return checkCommentBody(input)
+      .then((data) => {})
+      .catch(({ status, error }) => {
+        expect(status).toBe(400);
+        expect(error).toEqual({});
+      });
+  });
+  test("Rejects the promise when there is no body present", () => {
+    return checkCommentBody()
       .then((data) => {})
       .catch(({ status, error }) => {
         expect(status).toBe(400);

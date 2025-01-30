@@ -39,7 +39,9 @@ app.all("*", (request, response) => {
 });
 
 app.use((error, request, response, next) => {
-  if (error.status === 400 || error.code === "22P02") {
+  if (error.status === 400) {
+    response.status(400).send({ error: "400 - bad request" });
+  } else if (error.code === "22P02") {
     response.status(400).send({ error: "400 - bad request" });
   } else {
     next(error);
@@ -56,7 +58,7 @@ app.use((error, request, response, next) => {
 
 app.use((error, request, response, next) => {
   console.log("This is an unhandled error! ->", error, "<- Error");
-  ressponse.status(500).send({ error: "Server error" });
+  response.status(500).send({ error: "Server error" });
 });
 
 module.exports = app;
