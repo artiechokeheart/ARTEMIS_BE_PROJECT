@@ -361,3 +361,56 @@ describe("GET /api/users", () => {
       });
   });
 });
+
+describe("GET /api/articles Sorting Queries", () => {
+  test("200: Responds with an array in ascending order", () => {
+    return request(app)
+      .get("/api/articles?order=asc")
+      .expect(200)
+      .then((response) => {
+        const articles = response.body;
+        expect(articles).toBeSorted({ ascending: true });
+      });
+  });
+  test("200: Responds with an array sorted by article_id in ascending order", () => {
+    return request(app)
+      .get("/api/articles?sort_by=article_id&order=asc")
+      .expect(200)
+      .then((response) => {
+        const articles = response.body;
+        expect(articles).toBeSorted({ ascending: true });
+        expect(articles[0].article_id).toEqual(1);
+      });
+  });
+  test("200: Responds with an array sorted by article_id in ascending order", () => {
+    return request(app)
+      .get("/api/articles?sort_by=article_id")
+      .expect(200)
+      .then((response) => {
+        const articles = response.body;
+        expect(articles).toBeSorted({ descending: true });
+        expect(articles[0].article_id).toEqual(13);
+      });
+  });
+
+  describe("Errors", () => {
+    test("400: if order is not asc/desc, recieve an error", () => {
+      return request(app)
+        .get("/api/articles?order=topic")
+        .expect(400)
+        .then((response) => {
+          const articles = response.body;
+          expect(articles).toEqual({ error: "400 - bad request" });
+        });
+    });
+    test("404: if sort_by is not a valid column, recieve an error", () => {
+      return request(app)
+        .get("/api/articles?sort_by=hello")
+        .expect(404)
+        .then((response) => {
+          const articles = response.body;
+          expect(articles).toEqual({ error: "404 - page not found" });
+        });
+    });
+  });
+});
