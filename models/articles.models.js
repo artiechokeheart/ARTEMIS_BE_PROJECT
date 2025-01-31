@@ -3,6 +3,7 @@ const {
   checkArticleExists,
   checkUserExists,
   checkColumnExists,
+  checkTopicExists,
 } = require("../utils/checkCategoryExists");
 const format = require("pg-format");
 
@@ -15,9 +16,12 @@ exports.selectArticles = async (queries) => {
     "created_at",
     "votes",
   ];
+  const allowedOrders = ["asc", "desc"];
+
   const sort_by = queries.sort_by || "created_at";
   const order = queries.order || "desc";
-  const allowedOrders = ["asc", "desc"];
+  const topic = queries.topic;
+  console.log(topic, "<<< TOPIC");
   if (!allowedInputs.includes(sort_by)) {
     return Promise.reject({ status: 404, error: {} });
   }
@@ -29,6 +33,7 @@ exports.selectArticles = async (queries) => {
     [sort_by]
   );
   try {
+    await checkTopicExists();
     const query = await db.query(sqlQuery);
     return query.rows;
   } catch ({ status, error }) {

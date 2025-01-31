@@ -13,7 +13,19 @@ exports.checkColumnExists = async (column) => {
     return Promise.reject({ status: 500, error });
   }
 };
-
+exports.checkTopicExists = async (topic) => {
+  try {
+    const resolved = await db.query("SELECT * FROM articles WHERE topic = $1", [
+      topic,
+    ]);
+    if (resolved.rows.length === 0) {
+      return Promise.reject({ status: 404, error: {} });
+    }
+    return "check complete - category exists";
+  } catch (error) {
+    return Promise.reject({ status: 500, error });
+  }
+};
 exports.checkArticleExists = async (article_id) => {
   try {
     const resolved = await db.query(
