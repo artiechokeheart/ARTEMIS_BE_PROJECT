@@ -1,5 +1,18 @@
 const db = require("../db/connection");
-//const format = require("pg-format");
+const format = require("pg-format");
+
+exports.checkColumnExists = async (column) => {
+  const sqlQuery = format("SELECT %I FROM articles", [column]);
+  try {
+    const resolved = await db.query(sqlQuery);
+    if (resolved.rows.length === 0) {
+      return Promise.reject({ status: 404, error: {} });
+    }
+    return "check complete - column exists";
+  } catch (error) {
+    return Promise.reject({ status: 500, error });
+  }
+};
 
 exports.checkArticleExists = async (article_id) => {
   try {

@@ -2,15 +2,34 @@ const db = require("../db/connection");
 const {
   checkArticleExists,
   checkUserExists,
-  checkCommentBody,
+  checkColumnExists,
 } = require("../utils/checkCategoryExists");
 const format = require("pg-format");
 
-exports.selectArticles = async () => {
+exports.selectArticles = async (queries) => {
+  const allowedInputs = [
+    "author",
+    "title",
+    "article_id",
+    "topic",
+    "created_at",
+    "votes",
+  ];
+  const sort_by = queries.sort_by || "created_at";
+  const order = queries.order || "desc";
+  const allowedOrders = ["asc", "desc"];
+  if (!allowedInputs.includes(sort_by)) {
+    return Promise.reject({ status: 404, error: {} });
+  }
+  if (!allowedOrders.includes(order)) {
+    return Promise.reject({ status: 400, error: {} });
+  }
+  const sqlQuery = format(
+    `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id ORDER BY %I ${order}`,
+    [sort_by]
+  );
   try {
-    const query = await db.query(
-      `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id ORDER BY articles.created_at desc`
-    );
+    const query = await db.query(sqlQuery);
     return query.rows;
   } catch ({ status, error }) {
     error.status = status;
@@ -55,3 +74,21 @@ exports.updateArticlesById = async (article_id, inc_votes) => {
     return Promise.reject(error);
   }
 };
+
+//EXAMPLE (because I didn't need it)
+// const queryArr = [];
+// let queryString =
+//   "SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id";
+
+// if (sort_by) {
+//   queryArr.push(sort_by);
+//   queryString += ` ORDER BY %L`;
+// }
+
+// if (order.includes("asc") || order.includes("desc")) {
+//   queryArr.push(order);
+//   queryString += " %c";
+// }
+
+// const sqlQuery = format(queryString, queryArr);
+// console.log(sqlQuery);
