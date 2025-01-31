@@ -414,3 +414,24 @@ describe("GET /api/articles Sorting Queries", () => {
     });
   });
 });
+
+describe("GET /api/articles filter by topic", () => {
+  test("200", () => {
+    return request(app)
+      .get("/api/articles?topic=cats")
+      .expect(200)
+      .then((response) => {
+        const article = response.body;
+        expect(article).toEqual();
+      });
+  });
+  test("404", () => {
+    return request(app)
+      .get("/api/articles?topic=cats")
+      .expect(404)
+      .then((response) => {
+        const article = response.body;
+        expect(article).toEqual({ error: "404 - page not found" });
+      });
+  });
+});
