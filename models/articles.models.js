@@ -3,7 +3,6 @@ const {
   checkArticleExists,
   checkUserExists,
   checkCommentBody,
-  checkCommentExists,
 } = require("../utils/checkCategoryExists");
 const format = require("pg-format");
 
@@ -37,38 +36,6 @@ exports.selectArticlesById = async (article_id) => {
   }
 };
 
-exports.selectComments = async (article_id) => {
-  try {
-    await checkArticleExists(article_id);
-    const query = await db.query(
-      "SELECT * FROM comments WHERE article_id = $1 ORDER BY comments.created_at",
-      [article_id]
-    );
-    return query.rows;
-  } catch ({ status, error }) {
-    error.status = status;
-    return Promise.reject(error);
-  }
-};
-
-exports.addComment = async (body, username, article_id, votes = 0) => {
-  try {
-    await checkCommentBody(body);
-    await checkUserExists(username);
-    await checkArticleExists(article_id);
-    const sqlString = format(
-      "INSERT INTO comments (body, author, article_id, votes) VALUES %L RETURNING *;",
-      [[body, username, article_id, votes]]
-    );
-    const query = await db.query(sqlString);
-    const comment = query.rows[0];
-    return comment;
-  } catch ({ status, error }) {
-    error.status = status;
-    return Promise.reject(error);
-  }
-};
-
 exports.updateArticlesById = async (article_id, inc_votes) => {
   try {
     const selectArticle = await exports.selectArticlesById(article_id);
@@ -83,21 +50,6 @@ exports.updateArticlesById = async (article_id, inc_votes) => {
     );
     const query = await db.query(sqlString);
     return query.rows;
-  } catch ({ status, error }) {
-    error.status = status;
-    return Promise.reject(error);
-  }
-};
-
-exports.deleteComment = async (comment_id) => {
-  try {
-    const check = await checkCommentExists(comment_id);
-    const sqlString = format(
-      "DELETE FROM comments WHERE comments.comment_id = %s RETURNING *",
-      [comment_id]
-    );
-    await db.query(sqlString);
-    return;
   } catch ({ status, error }) {
     error.status = status;
     return Promise.reject(error);

@@ -6,11 +6,13 @@ const { getTopics } = require("./controllers/topics.controllers");
 const {
   getArticlesById,
   getArticles,
+  patchArticlesById,
+} = require("./controllers/articles.controllers");
+const {
   getArticleComments,
   postComment,
-  patchArticlesById,
   deleteArticleComments,
-} = require("./controllers/articles.controllers");
+} = require("./controllers/comments.controllers");
 const { getUsers } = require("./controllers/users.controllers");
 
 app.use(express.json());
