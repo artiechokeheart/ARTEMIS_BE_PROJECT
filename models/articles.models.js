@@ -30,7 +30,7 @@ exports.selectArticles = async ({
 
   const startOfQuery = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id`;
   let optionalWhere = "";
-  const endOfQuery = ` GROUP BY articles.article_id ORDER BY %I ${order}`;
+  const endOfQuery = ` GROUP BY articles.article_id ORDER BY %I %s`;
   if (topic) {
     optionalWhere = ` WHERE topic = %L`;
   }
@@ -40,10 +40,10 @@ exports.selectArticles = async ({
     if (topic) {
       await checkTopicExists(topic);
       queryString = startOfQuery + optionalWhere + endOfQuery;
-      sqlQuery = format(queryString, [topic], [sort_by]);
+      sqlQuery = format(queryString, [topic], [sort_by], [order]);
     } else {
       queryString = startOfQuery + optionalWhere + endOfQuery;
-      sqlQuery = format(queryString, [sort_by]);
+      sqlQuery = format(queryString, [sort_by], [order]);
     }
 
     const query = await db.query(sqlQuery);
