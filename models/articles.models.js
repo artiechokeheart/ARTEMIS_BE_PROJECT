@@ -1,8 +1,6 @@
 const db = require("../db/connection");
 const {
   checkArticleExists,
-  checkUserExists,
-  checkColumnExists,
   checkTopicExists,
 } = require("../utils/checkCategoryExists");
 const format = require("pg-format");
@@ -29,20 +27,17 @@ exports.selectArticles = async ({
   }
 
   const startOfQuery = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id`;
-  let optionalWhere = "";
   const endOfQuery = ` GROUP BY articles.article_id ORDER BY %I %s`;
-  if (topic) {
-    optionalWhere = ` WHERE topic = %L`;
-  }
   let queryString = "";
 
   try {
     if (topic) {
       await checkTopicExists(topic);
-      queryString = startOfQuery + optionalWhere + endOfQuery;
+      queryString = startOfQuery + ` WHERE topic = %L ` + endOfQuery;
+
       sqlQuery = format(queryString, [topic], [sort_by], [order]);
     } else {
-      queryString = startOfQuery + optionalWhere + endOfQuery;
+      queryString = startOfQuery + endOfQuery;
       sqlQuery = format(queryString, [sort_by], [order]);
     }
 
@@ -91,6 +86,3 @@ exports.updateArticlesById = async (article_id, inc_votes) => {
     return Promise.reject(error);
   }
 };
-
-//EXAMPLE
-// SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id WHERE topic = 'cats' GROUP BY articles.article_id ORDER BY created_at desc;
