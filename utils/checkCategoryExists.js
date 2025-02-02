@@ -21,11 +21,12 @@ exports.checkTopicExists = async (topic) => {
     if (resolved.rows.length === 0) {
       return Promise.reject({ status: 404, error: {} });
     }
-    return "check complete - category exists";
+    return "check complete - topic exists";
   } catch (error) {
     return Promise.reject({ status: 500, error });
   }
 };
+
 exports.checkArticleExists = async (article_id) => {
   try {
     const resolved = await db.query(

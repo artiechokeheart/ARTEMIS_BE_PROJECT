@@ -7,7 +7,11 @@ const {
 } = require("../utils/checkCategoryExists");
 const format = require("pg-format");
 
-exports.selectArticles = async (queries) => {
+exports.selectArticles = async ({
+  sort_by = "created_at",
+  order = "desc",
+  topic,
+}) => {
   const allowedInputs = [
     "author",
     "title",
@@ -17,23 +21,31 @@ exports.selectArticles = async (queries) => {
     "votes",
   ];
   const allowedOrders = ["asc", "desc"];
-
-  const sort_by = queries.sort_by || "created_at";
-  const order = queries.order || "desc";
-  const topic = queries.topic;
-  console.log(topic, "<<< TOPIC");
   if (!allowedInputs.includes(sort_by)) {
     return Promise.reject({ status: 404, error: {} });
   }
   if (!allowedOrders.includes(order)) {
     return Promise.reject({ status: 400, error: {} });
   }
-  const sqlQuery = format(
-    `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id ORDER BY %I ${order}`,
-    [sort_by]
-  );
+
+  const startOfQuery = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id`;
+  let optionalWhere = "";
+  const endOfQuery = ` GROUP BY articles.article_id ORDER BY %I %s`;
+  if (topic) {
+    optionalWhere = ` WHERE topic = %L`;
+  }
+  let queryString = "";
+
   try {
-    await checkTopicExists();
+    if (topic) {
+      await checkTopicExists(topic);
+      queryString = startOfQuery + optionalWhere + endOfQuery;
+      sqlQuery = format(queryString, [topic], [sort_by], [order]);
+    } else {
+      queryString = startOfQuery + optionalWhere + endOfQuery;
+      sqlQuery = format(queryString, [sort_by], [order]);
+    }
+
     const query = await db.query(sqlQuery);
     return query.rows;
   } catch ({ status, error }) {
@@ -80,20 +92,5 @@ exports.updateArticlesById = async (article_id, inc_votes) => {
   }
 };
 
-//EXAMPLE (because I didn't need it)
-// const queryArr = [];
-// let queryString =
-//   "SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id";
-
-// if (sort_by) {
-//   queryArr.push(sort_by);
-//   queryString += ` ORDER BY %L`;
-// }
-
-// if (order.includes("asc") || order.includes("desc")) {
-//   queryArr.push(order);
-//   queryString += " %c";
-// }
-
-// const sqlQuery = format(queryString, queryArr);
-// console.log(sqlQuery);
+//EXAMPLE
+// SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id WHERE topic = 'cats' GROUP BY articles.article_id ORDER BY created_at desc;

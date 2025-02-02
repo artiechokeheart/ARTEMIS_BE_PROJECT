@@ -422,12 +422,24 @@ describe("GET /api/articles filter by topic", () => {
       .expect(200)
       .then((response) => {
         const article = response.body;
-        expect(article).toEqual();
+        expect(article).toEqual([
+          {
+            article_id: 5,
+            article_img_url:
+              "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+            author: "rogersop",
+            comment_count: "2",
+            created_at: "2020-08-03T13:14:00.000Z",
+            title: "UNCOVERED: catspiracy to bring down democracy",
+            topic: "cats",
+            votes: 0,
+          },
+        ]);
       });
   });
   test("404", () => {
     return request(app)
-      .get("/api/articles?topic=cats")
+      .get("/api/articles?topic=farming")
       .expect(404)
       .then((response) => {
         const article = response.body;
