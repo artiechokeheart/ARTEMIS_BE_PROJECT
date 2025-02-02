@@ -16,7 +16,8 @@
   },
   "GET /api/articles": {
     "description": "serves an array of all articles",
-    "queries": ["author", "topic", "sort_by", "order"],
+    "queries": ["sort_by, order, topic"],
+    "exampleInput": "/api/articles?topic=dinosaurs",
     "exampleResponse": {
       "articles": [
         {
@@ -40,7 +41,7 @@
         "article_id": 20,
         "body": "A new publication has just landed claiming Spinosaurus didn't use its sail to swim nor as a mating display, but to actually fly through the air",
         "topic": "dinosaurs",
-        "created_at": "2018-05-30T15:59:13.341Z",
+        "created_at": "2018-05-30T17:59:13.341Z",
         "votes": -9001,
         "article_img_url": "https://cdna.artstation.com/p/assets/images/images/065/838/736/large/heitoresco-img-2063-2.jpg?1691373139",
         "comment_count": 1912
