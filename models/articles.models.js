@@ -19,22 +19,18 @@ exports.selectArticles = async ({
     "votes",
   ];
   const allowedOrders = ["asc", "desc"];
-  if (!allowedInputs.includes(sort_by)) {
+  if (!allowedInputs.includes(sort_by))
     return Promise.reject({ status: 404, error: {} });
-  }
-  if (!allowedOrders.includes(order)) {
+  if (!allowedOrders.includes(order))
     return Promise.reject({ status: 400, error: {} });
-  }
 
   const startOfQuery = `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id`;
   const endOfQuery = ` GROUP BY articles.article_id ORDER BY %I %s`;
-  let queryString = "";
 
   try {
     if (topic) {
       await checkTopicExists(topic);
       queryString = startOfQuery + ` WHERE topic = %L ` + endOfQuery;
-
       sqlQuery = format(queryString, [topic], [sort_by], [order]);
     } else {
       queryString = startOfQuery + endOfQuery;
