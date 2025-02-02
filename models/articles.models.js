@@ -49,12 +49,13 @@ exports.selectArticlesById = async (article_id) => {
   try {
     await checkArticleExists(article_id);
     const query = await db.query(
-      "SELECT * FROM articles WHERE article_id = $1",
+      `SELECT articles.*, COUNT(comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id WHERE articles.article_id = $1 GROUP BY articles.article_id;`,
       [article_id]
     );
     if (query.rows.length === 0) {
       return Promise.reject({ status: 404, error: {} });
     } else {
+      query.rows[0].comment_count = parseInt(query.rows[0].comment_count);
       return query.rows;
     }
   } catch ({ status, error }) {
@@ -82,3 +83,7 @@ exports.updateArticlesById = async (article_id, inc_votes) => {
     return Promise.reject(error);
   }
 };
+
+// SELECT articles.*, COUNT(comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id;
+
+//SELECT articles.*, COUNT(comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id WHERE articles.article_id = 5 GROUP BY articles.article_id;
