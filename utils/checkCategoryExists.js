@@ -58,7 +58,7 @@ exports.checkUserExists = async (username) => {
 
 exports.checkCommentBody = async (body) => {
   try {
-    if (typeof body != "string" || body.length === 0) {
+    if (typeof body !== "string" || body.length === 0) {
       return Promise.reject({
         status: 400,
         error: {},
@@ -74,7 +74,7 @@ exports.checkCommentBody = async (body) => {
 exports.checkCommentExists = async (comment_id) => {
   try {
     const resolved = await db.query(
-      "SELECT * FROM articles WHERE article_id = $1",
+      "SELECT * FROM comments WHERE comment_id = $1",
       [comment_id]
     );
     if (resolved.rows.length === 0) {
