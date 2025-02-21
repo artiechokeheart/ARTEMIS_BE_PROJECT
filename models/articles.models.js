@@ -17,6 +17,7 @@ exports.selectArticles = async ({
     "topic",
     "created_at",
     "votes",
+    "comment_count",
   ];
   const allowedOrders = ["asc", "desc"];
   if (!allowedInputs.includes(sort_by))
