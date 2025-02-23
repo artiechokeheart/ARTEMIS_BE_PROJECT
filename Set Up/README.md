@@ -45,7 +45,7 @@ Now download the required dependancies.
     npm install
 
 The minimum versions of Node.js, and Postgres needed to run the project are
-Node "version":"4.0.8" and Postgres "version": "8.0"
+Node "version":"4.0.8" and Postgres "version": "8.0."
 
 ### Databases
 
@@ -56,6 +56,8 @@ Start by running setup-dbs
 Then seed the data with
 
     npm run seed
+
+<br />
 
 ## Testing
 

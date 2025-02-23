@@ -17,7 +17,7 @@
   "GET /api/articles": {
     "description": "serves an array of all articles",
     "queries": ["sort_by, order, topic"],
-    "exampleInput": "/api/articles?topic=dinosaurs",
+    "exampleInput": "/api/articles?topic=dinosaurs&sort_by=votes&order=asc",
     "exampleResponse": {
       "articles": [
         {
@@ -51,7 +51,7 @@
   "PATCH /api/articles/:article_id": {
     "description": "updates the desired article and serves an object of the updated article",
     "queries": [],
-    "exampleInput": { "inc_votes": 2 },
+    "exampleInput": "'{inc_votes: 2 }'",
     "exampleResponse": {
       "article": {
         "author": "DrSaurus",
@@ -76,24 +76,25 @@
       "author": "Cringe-o-pod",
       "body": "As if my childhood hadn't be ruined enough by dinosaurs having feathers...",
       "article_id": 20
-    },
-    "POST /api/articles/:article_id/comments": {
-      "description": "adds new comments to existing articles and serves back the comment as an object",
-      "queries": [],
-      "exampleResponse": {
-        "comment_id": 999,
-        "votes": 42,
-        "created_at": "2018-05-31T21:59:13.341Z",
-        "author": "ibelievetheycouldfly",
-        "body": "Fascinating and informative article, I'm won over #ibelieve",
-        "article_id": 20
-      }
-    },
-    "DELETE /api/comments/:comment_id": {
-      "description": "deletes the desired comment and serves a 204 with no content",
-      "exampleInput": "/api/comments/20",
-      "exampleResponse": ""
     }
+  },
+
+  "POST /api/articles/:article_id/comments": {
+    "description": "adds new comments to existing articles and serves back the comment as an object",
+    "queries": [],
+    "exampleResponse": {
+      "comment_id": 999,
+      "votes": 42,
+      "created_at": "2018-05-31T21:59:13.341Z",
+      "author": "ibelievetheycouldfly",
+      "body": "Fascinating and informative article, I'm won over #ibelieve",
+      "article_id": 20
+    }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes the desired comment and serves a 204 status with no content",
+    "exampleInput": "/api/comments/20",
+    "exampleResponse": ""
   },
   "GET /api/users": {
     "description": "serves an array of all users",
