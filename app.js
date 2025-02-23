@@ -19,10 +19,6 @@ const { getUsers } = require("./controllers/users.controllers");
 app.use(cors());
 app.use(express.json());
 
-app.get("/", (request, response) => {
-  response.send("hello world!");
-});
-
 app.get("/api", (request, response, next) => {
   response.send({ endpoints: endpoints });
 });

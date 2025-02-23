@@ -112,7 +112,6 @@ describe("GET /api/articles", () => {
           expect(typeof article.article_img_url).toBe("string");
           expect(typeof article.comment_count).toBe("string");
           expect(!article.body).toEqual(true);
-          //double check if looking for a falsy value can give you false positives?
         });
       });
   });
@@ -202,9 +201,6 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(typeof comment.created_at).toEqual("string");
       });
   });
-  test.todo(
-    "Double check if test is needed to check the time posted as a date (date.now/date.parse etc)"
-  );
   describe("Errors", () => {
     test("404: Recieve a 404 when article_id does not exist but is a valid data type", () => {
       return request(app)
